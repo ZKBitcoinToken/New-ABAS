@@ -1,4 +1,5 @@
 /**
+Testnet added _MINIMUM_TARGET = _MAXIMUM_TARGET.div(100); for 100 difficulty maximum on testnet, doubles every era
  *Submitted for verification at Etherscan.io on 2022-12-20
 */
 
