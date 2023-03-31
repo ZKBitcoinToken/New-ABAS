@@ -546,6 +546,7 @@ contract ArbitrumBitcoinAndStaking is Ownable, IERC20 {
     uint public  _MINIMUM_TARGET = 2**16;
     
     uint public  _MAXIMUM_TARGET = 2**234;
+    uint public  _MINIMUM_TARGET = _MAXIMUM_TARGET.div(100); //100 on testnet, Mainnet = 0xBTC difficulty = 543546542 = 12 min blocks at 4 th/s
     uint public miningTarget = _MAXIMUM_TARGET.div(200000000000*25);  //1000 million difficulty to start until i enable mining
     
     bytes32 public challengeNumber = ArbSys(0x0000000000000000000000000000000000000064).arbBlockHash( ArbSys(0x0000000000000000000000000000000000000064).arbBlockNumber() - 1);   //generate a new one when a new reward is minted
@@ -993,6 +994,7 @@ function zinit(address AuctionAddress2, address LPGuild2, address LPGuild3) publ
 			rewardEra = rewardEra + 1;
 			maxSupplyForEra = _totalSupply - _totalSupply.div( 2**(rewardEra + 1));
 			if(rewardEra < 8){
+				_MINIMUM_TARGET	= _MINIMUM_TARGET.div(2);
 				targetTime = ((12 * 60) * 2**rewardEra);
 				if(rewardEra < 6){
 					if(_BLOCKS_PER_READJUSTMENT <= 16){
