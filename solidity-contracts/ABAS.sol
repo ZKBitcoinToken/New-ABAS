@@ -805,6 +805,61 @@ function zinit(address AuctionAddress2, address LPGuild2, address LPGuild3) publ
 
 	}
 
+	function requiredETH() returns (uint256 eth){
+		uint256 x = ((block.timestamp - previousBlockTime) * 888) / targetTime;
+		uint ratio = x * 100 / 888 ;
+		return 10**15 * 50 / ratio;
+	}
+	
+	function mintToJustABASETH(uint256 nonce, bytes32 challenge_digest) public payable returns (uint256 totalOwed) {
+
+		bytes32 digest =  keccak256(abi.encodePacked(challengeNumber, msg.sender, nonce));
+
+		//the challenge digest must match the expected
+		require(digest == challenge_digest, "Old challenge_digest or wrong challenge_digest");
+
+		//the digest must be smaller than the target
+		require(uint256(digest) < miningTarget, "Digest must be smaller than miningTarget");
+		_startNewMiningEpoch();
+
+		require(block.timestamp > previousBlockTime, "No solve for first 5 seconds.");
+
+		require(uint256(digest) < (miningTarget), "Digest must be smaller than miningTarget");
+		
+		//uint diff = block.timestamp - previousBlockTime;
+		uint256 x = ((block.timestamp - previousBlockTime) * 888) / targetTime;
+		uint ratio = x * 100 / 888 ;
+		
+		
+		if(ratio > 100){
+			
+			slowBlocks = slowBlocks.add(1);
+			
+		}else{
+			require(msg.value >= 10**15 * 50 / ratio, "Must send required ETH to contract for fast mints, call requiredETH() to get current fee");
+		
+		//best @ 3000 ratio totalOwed / 100000000 = 71.6
+		if(ratio < 3000){
+			totalOwed = (508606*(15*x**2)).div(888 ** 2)+ (9943920 * (x)).div(888);
+		}else {
+			totalOwed = (24*x*5086060).div(888)+3456750000;
+		}
+
+
+		balances[msg.sender] = balances[msg.sender].add((reward_amount * totalOwed).div(100000000));
+		balances[AddressLPReward] = balances[AddressLPReward].add((reward_amount * totalOwed).div(100000000));
+		balances[AddressLPReward2] = balances[AddressLPReward2].add((reward_amount * totalOwed).div(100000000));
+				
+		tokensMinted = tokensMinted.add((reward_amount * totalOwed).div(100000000));
+		previousBlockTime = block.timestamp;
+		
+
+		emit Mint(msg.sender, (reward_amount * totalOwed).div(100000000), epochCount, challengeNumber );
+
+		return totalOwed;
+
+	}
+
 
 	function mintTokensArrayTo(uint256 nonce, bytes32 challenge_digest, address[] memory ExtraFunds, address[] memory MintTo) public returns (uint256 owed) {
 		uint256 totalOd = mintTo(nonce,challenge_digest, MintTo[0]);
