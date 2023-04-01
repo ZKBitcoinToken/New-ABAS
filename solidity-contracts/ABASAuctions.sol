@@ -355,6 +355,8 @@ contract ABASMining{
     
         //require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, stricttotal), "NO OTHER WAY, send it the required 0xBitcoin");
         require(msg.value >= stricttotal, "Must send required ETH");
+        address payable To = payable (AddressForgeToken);
+        To.send(msg.value);
         emit BurnMultipleDays(msg.sender, _member, _era, fdays.length, stricttotal);
         
         return true;
@@ -366,7 +368,7 @@ contract ABASMining{
         uint day = currentDay;
        // require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, _0xbtcAmount), "NO WAY, requires 0xBTC send");
 
-        address payable To = payable (AddressForgeToken );
+        address payable To = payable (AddressForgeToken);
         To.send(msg.value);
         _recordBurn(msg.sender, member, currentEra, currentDay, msg.value);
         emit Burn(msg.sender, member, currentEra, day, msg.value, mapEraDay_Units[currentEra][currentDay]);
