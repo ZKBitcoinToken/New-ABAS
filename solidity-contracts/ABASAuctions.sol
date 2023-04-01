@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Arbiscan on 2022-12-09
-*/
-
 //  Arbitrum Bitcoin and Staking - Auctions Contract
 //  Auctions Arbitrum Bitcoin and Staking (ABAS) tokens every 12 days and users are able to withdraw anytime after!
 //
@@ -355,8 +351,6 @@ contract ABASMining{
     
         //require(IERC20(AddressZeroXBTC).transferFrom(msg.sender, AddressForgeToken, stricttotal), "NO OTHER WAY, send it the required 0xBitcoin");
         require(msg.value >= stricttotal, "Must send required ETH");
-        address payable To = payable (AddressForgeToken );
-        To.send(msg.value);
         emit BurnMultipleDays(msg.sender, _member, _era, fdays.length, stricttotal);
         
         return true;
